@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL 扫描器</title>
+    <style>
+        /* 主体背景样式 */
+        body {
+            background-image: url('{{ url_for('static', filename='bg.jpg') }}');
+            background-size: cover;
+            font-family: '微软雅黑', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 主标题、表单和结果显示的样式 */
+        h1,
+        form,
+        pre {
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        /* 表单标签的样式 */
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* 输入框和按钮的样式 */
+        input,
+        button {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        /* 扫描按钮的样式 */
+        button {
+            background-color: #1E90FF; /* 蓝色背景 */
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* 扫描按钮悬停效果 */
+        button:hover {
+            background-color: #4169E1; /* 悬停时深蓝色 */
+        }
+
+        /* 次标题的样式 */
+        h2 {
+            margin: 20px;
+            text-align: center;
+        }
+
+        /* 进度条的样式 */
+        progress {
+            width: 100%;
+            height: 20px;
+            margin-top: 10px;
+        }
+
+        /* 底部链接和图像的样式 */
+        .bottom-link {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        /* 底部链接图像的样式 */
+        .bottom-link img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+        h2 {
+            background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            text-align: center;
+            position: relative; /* 相对定位，使内部元素定位相对于它们 */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 主标题，包含 Logo -->
+    <h1>
+        <img src="{{ url_for('static', filename='dxl.jpg') }}" alt="DXL Logo" style="width: 50px; height: 50px; border-radius: 50%;">
+        DXL URL 扫描器
+    </h1>
+
+    <!-- 扫描表单，包含输入字段和进度条 -->
+    <form method="post" action="/scan" onsubmit="showProgressBar()">
+        <label for="url">URL或IP地址：</label>
+        <input type="text" id="url" name="url" required>
+        <label for="num_threads">线程数：</label>
+        <input type="number" id="num_threads" name="num_threads" value="4" min="1" max="648">
+        <label for="min_port">最小扫描端口：</label>
+        <input type="number" id="min_port" name="min_port" value="1" min="1" max="65535">
+        <label for="max_port">最大扫描端口：</label>
+        <input type="number" id="max_port" name="max_port" value="65535" min="1" max="65535">
+        <button type="submit">扫描</button>
+        <!-- 初始时隐藏进度条 -->
+        <progress id="scanProgress" value="0" max="100" style="display: none;"></progress>
+    </form>
+
+    <!-- 用于扫描结果的次标题 -->
+    <h2>扫描结果：</h2>
+
+    <!-- 显示扫描结果的区域 -->
+    <pre id="scanResult" style="background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; white-space: pre-wrap;">{{ result }}</pre>
+
+    <!-- 底部链接，包含 Bilibili 图像 -->
+    <div class="bottom-link">
+        <a href="https://space.bilibili.com/1437582453" target="_blank">
+            <img src="{{ url_for('static', filename='dxl.jpg') }}" alt="Bilibili">
+        </a>
+    </div>
+
+    <!-- JavaScript 函数，用于显示进度条 -->
+    <script>
+        function showProgressBar() {
+            var progress = document.getElementById('scanProgress');
+            progress.style.display = 'block';
+            var value = 0;
+            var interval = setInterval(function () {
+                if (value >= 100) {
+                    clearInterval(interval);
+                    progress.style.display = 'none';
+                } else {
+                    value += 10;
+                    progress.value = value;
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
